@@ -24,7 +24,7 @@ export const expenseSchema = z.object({
       EXPENSE_CATEGORY.OTHER,
     ],
     {
-      errorMap: () => ({ message: "validation.required" }),
+      message: "validation.required",
     }
   ),
   countryContext: z.enum([COUNTRY_CONTEXT.DE, COUNTRY_CONTEXT.MX, COUNTRY_CONTEXT.OTHER]),
@@ -38,7 +38,7 @@ export const expenseSchema = z.object({
       PAYMENT_METHOD.OTHER,
     ],
     {
-      errorMap: () => ({ message: "validation.required" }),
+      message: "validation.required",
     }
   ),
 });
