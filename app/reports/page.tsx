@@ -21,7 +21,7 @@ async function ReportsContent({
 
   let summary: Awaited<ReturnType<typeof getFinancialSummary>>;
 
-  if (env.USE_MOCK_DATA) {
+  if (env.USE_MOCK_DATA || !env.DATABASE_URL) {
     summary = getMockFinancialSummary();
   } else {
     try {

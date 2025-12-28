@@ -13,6 +13,9 @@ import {
 import { invoiceSchema, type InvoiceFormData } from "@/lib/validation/invoices";
 import { calculateTax, calculateTotal } from "@/lib/currency";
 import { getCurrentYear } from "@/lib/date";
+import { env } from "@/lib/env";
+import { addMockInvoice } from "@/lib/mock-store";
+import { randomUUID } from "crypto";
 
 export async function createInvoiceAction(data: InvoiceFormData) {
   try {
@@ -49,6 +52,43 @@ export async function createInvoiceAction(data: InvoiceFormData) {
       validated.countryContext
     );
 
+    const itemsWithSort = items.map((item, index) => ({
+      ...item,
+      sortOrder: index,
+    }));
+
+    if (env.USE_MOCK_DATA || !env.DATABASE_URL) {
+      const now = new Date();
+      const invoiceId = randomUUID();
+      const mockInvoice = addMockInvoice({
+        id: invoiceId,
+        organizationId,
+        clientId: validated.clientId,
+        invoiceNumber,
+        issueDate: validated.issueDate,
+        dueDate: validated.dueDate,
+        currency: validated.currency,
+        language: validated.language,
+        countryContext: validated.countryContext,
+        status: "draft",
+        subtotalAmount: subtotal.toString(),
+        taxAmount: totalTax.toString(),
+        totalAmount: totalAmount.toString(),
+        notes: validated.notes || null,
+        pdfUrl: null,
+        createdAt: now,
+        updatedAt: now,
+        items: itemsWithSort.map((item) => ({
+          id: randomUUID(),
+          invoiceId,
+          ...item,
+        })) as any,
+      });
+
+      revalidatePath("/invoices");
+      return { success: true, data: mockInvoice };
+    }
+
     const newInvoice = await createInvoice(
       {
         organizationId,
@@ -65,10 +105,7 @@ export async function createInvoiceAction(data: InvoiceFormData) {
         totalAmount: totalAmount.toString(),
         notes: validated.notes || null,
       },
-      items.map((item, index) => ({
-        ...item,
-        sortOrder: index,
-      })) as any
+      itemsWithSort as any
     );
 
     revalidatePath("/invoices");
@@ -184,4 +221,3 @@ export async function updateInvoiceStatusAction(invoiceId: string, status: strin
     };
   }
 }
-

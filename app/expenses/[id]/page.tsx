@@ -14,21 +14,26 @@ import { getMockExpenses } from "@/lib/mock-data-helpers";
 import { getServerTranslations } from "@/lib/i18n/server";
 import { getCountryLabelKey, getExpenseCategoryLabelKey, getPaymentMethodLabelKey } from "@/lib/i18n/formatters";
 
-export default async function ExpenseDetailPage({ params }: { params: { id: string } }) {
+export default async function ExpenseDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { t } = await getServerTranslations();
+  const { id } = await params;
   let expense: Awaited<ReturnType<typeof getExpenseById>> | null = null;
 
   if (env.USE_MOCK_DATA || !env.DATABASE_URL) {
     const mockExpenses = getMockExpenses();
-    expense = (mockExpenses.find((exp) => exp.id === params.id) || null) as typeof expense;
+    expense = (mockExpenses.find((exp) => exp.id === id) || null) as typeof expense;
   } else {
     try {
       const organizationId = await requireOrganizationId();
-      expense = await getExpenseById(params.id, organizationId);
+      expense = await getExpenseById(id, organizationId);
     } catch (error) {
       console.warn("Auth failed, using mock data:", error);
       const mockExpenses = getMockExpenses();
-      expense = (mockExpenses.find((exp) => exp.id === params.id) || null) as typeof expense;
+      expense = (mockExpenses.find((exp) => exp.id === id) || null) as typeof expense;
     }
   }
 
@@ -41,12 +46,12 @@ export default async function ExpenseDetailPage({ params }: { params: { id: stri
 
   async function handleSubmit(data: any) {
     "use server";
-    return await updateExpenseAction(params.id, data);
+    return await updateExpenseAction(id, data);
   }
 
   async function handleDelete() {
     "use server";
-    await deleteExpenseAction(params.id);
+    await deleteExpenseAction(id);
     redirect("/expenses");
   }
 

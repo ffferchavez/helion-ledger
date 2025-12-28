@@ -9,15 +9,24 @@ import type { Client } from "@/db/schema/clients";
 import { mockInvoices, mockExpenses, mockClients } from "./mock-data";
 import { getCurrentYear, getCurrentMonth, getPeriodDates } from "./date";
 import { COUNTRY_CONTEXT } from "./constants";
+import { getMockExpenseStore, getMockInvoiceStore } from "./mock-store";
+
+const MOCK_CLIENT_IDS = [
+  "11111111-1111-4111-8111-111111111111",
+  "22222222-2222-4222-8222-222222222222",
+  "33333333-3333-4333-8333-333333333333",
+];
+
+const getMockClientId = (idx: number) => MOCK_CLIENT_IDS[idx % MOCK_CLIENT_IDS.length];
 
 /**
  * Get mock invoices (for UI preview when database is not available)
  */
 export function getMockInvoices(): Array<Invoice & { items: any[] }> {
-  return mockInvoices.map((inv, idx) => ({
+  const baseInvoices = mockInvoices.map((inv, idx) => ({
     id: `mock-invoice-${idx}`,
     organizationId: "mock-org-id",
-    clientId: mockClients[idx % mockClients.length].name || "mock-client-id",
+    clientId: getMockClientId(idx),
     invoiceNumber: `INV-${inv.countryContext}-2024-${String(idx + 1).padStart(4, "0")}`,
     issueDate: inv.issueDate,
     dueDate: inv.dueDate,
@@ -47,13 +56,16 @@ export function getMockInvoices(): Array<Invoice & { items: any[] }> {
       },
     ],
   })) as any;
+
+  const storedInvoices = getMockInvoiceStore();
+  return [...storedInvoices, ...baseInvoices] as any;
 }
 
 /**
  * Get mock expenses
  */
 export function getMockExpenses(): Expense[] {
-  return mockExpenses.map((exp, idx) => ({
+  const baseExpenses = mockExpenses.map((exp, idx) => ({
     id: `mock-expense-${idx}`,
     organizationId: "mock-org-id",
     vendorName: exp.vendorName,
@@ -72,6 +84,9 @@ export function getMockExpenses(): Expense[] {
     createdAt: new Date(),
     updatedAt: new Date(),
   })) as any;
+
+  const storedExpenses = getMockExpenseStore();
+  return [...storedExpenses, ...baseExpenses] as any;
 }
 
 /**
@@ -79,7 +94,7 @@ export function getMockExpenses(): Expense[] {
  */
 export function getMockClients(): Client[] {
   return mockClients.map((client, idx) => ({
-    id: `mock-client-${idx}`,
+    id: getMockClientId(idx),
     organizationId: "mock-org-id",
     name: client.name,
     contactPerson: client.contactPerson || null,
@@ -142,4 +157,3 @@ export function getMockFinancialSummary() {
     },
   };
 }
-

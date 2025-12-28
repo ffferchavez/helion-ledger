@@ -16,24 +16,29 @@ import { getMockInvoices, getMockClients } from "@/lib/mock-data-helpers";
 import { getServerTranslations } from "@/lib/i18n/server";
 import { getCountryLabelKey, getInvoiceStatusLabelKey } from "@/lib/i18n/formatters";
 
-export default async function InvoiceDetailPage({ params }: { params: { id: string } }) {
+export default async function InvoiceDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { t } = await getServerTranslations();
+  const { id } = await params;
   let invoice: Awaited<ReturnType<typeof getInvoiceById>>;
   let clients: Awaited<ReturnType<typeof getClientsByOrganization>>;
 
   if (env.USE_MOCK_DATA || !env.DATABASE_URL) {
     const mockInvoices = getMockInvoices();
-    invoice = mockInvoices.find((inv) => inv.id === params.id) || null;
+    invoice = mockInvoices.find((inv) => inv.id === id) || null;
     clients = getMockClients() as any;
   } else {
     try {
       const organizationId = await requireOrganizationId();
-      invoice = await getInvoiceById(params.id, organizationId);
+      invoice = await getInvoiceById(id, organizationId);
       clients = await getClientsByOrganization(organizationId);
     } catch (error) {
       console.warn("Auth failed, using mock data:", error);
       const mockInvoices = getMockInvoices();
-      invoice = mockInvoices.find((inv) => inv.id === params.id) || null;
+      invoice = mockInvoices.find((inv) => inv.id === id) || null;
       clients = getMockClients() as any;
     }
   }
@@ -44,13 +49,13 @@ export default async function InvoiceDetailPage({ params }: { params: { id: stri
 
   async function handleSubmit(data: any) {
     "use server";
-    return await updateInvoiceAction(params.id, data);
+    return await updateInvoiceAction(id, data);
   }
 
   async function handleStatusChange(status: string) {
     "use server";
-    await updateInvoiceStatusAction(params.id, status);
-    redirect(`/invoices/${params.id}`);
+    await updateInvoiceStatusAction(id, status);
+    redirect(`/invoices/${id}`);
   }
 
   const invoiceFormData = {

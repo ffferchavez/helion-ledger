@@ -30,7 +30,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/70 backdrop-blur-2xl animate-in fade-in duration-500">
-      <div className="container flex h-[72px] items-center justify-between gap-4 px-4">
+      <div className="flex h-[72px] w-full items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3">
           <div className="h-9 w-9 rounded-full border border-border bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.9),rgba(94,163,255,0.35)_45%,rgba(15,23,42,0.7)_70%)] shadow-[inset_0_0_10px_rgba(255,255,255,0.2),0_10px_30px_-18px_rgba(94,163,255,0.8)]" />
           <h1 className="text-lg font-semibold tracking-tight">

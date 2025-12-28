@@ -10,6 +10,9 @@ import {
 } from "@/db/queries/expenses";
 import { expenseSchema, type ExpenseFormData } from "@/lib/validation/expenses";
 import { calculateTax, calculateTotal } from "@/lib/currency";
+import { env } from "@/lib/env";
+import { addMockExpense } from "@/lib/mock-store";
+import { randomUUID } from "crypto";
 
 export async function createExpenseAction(data: ExpenseFormData) {
   try {
@@ -18,6 +21,32 @@ export async function createExpenseAction(data: ExpenseFormData) {
 
     const taxAmount = calculateTax(validated.amount, validated.taxRate);
     const totalAmount = calculateTotal(validated.amount, taxAmount);
+
+    if (env.USE_MOCK_DATA || !env.DATABASE_URL) {
+      const now = new Date();
+      const mockExpense = addMockExpense({
+        id: randomUUID(),
+        organizationId,
+        vendorName: validated.vendorName,
+        description: validated.description || null,
+        amount: validated.amount.toString(),
+        currency: validated.currency,
+        taxRate: validated.taxRate.toString(),
+        taxAmount: taxAmount.toString(),
+        totalAmount: totalAmount.toString(),
+        category: validated.category,
+        countryContext: validated.countryContext,
+        deductible: validated.deductible ?? true,
+        date: validated.date,
+        paymentMethod: validated.paymentMethod,
+        receiptUrl: null,
+        createdAt: now,
+        updatedAt: now,
+      } as any);
+
+      revalidatePath("/expenses");
+      return { success: true, data: mockExpense };
+    }
 
     const newExpense = await createExpense({
       organizationId,
@@ -100,4 +129,3 @@ export async function deleteExpenseAction(expenseId: string) {
     };
   }
 }
-

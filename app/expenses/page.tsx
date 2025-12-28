@@ -24,7 +24,7 @@ export default async function ExpensesPage() {
   const { t } = await getServerTranslations();
   let expenses: Awaited<ReturnType<typeof getExpensesByOrganization>>;
 
-  if (env.USE_MOCK_DATA) {
+  if (env.USE_MOCK_DATA || !env.DATABASE_URL) {
     expenses = getMockExpenses() as any;
   } else {
     try {

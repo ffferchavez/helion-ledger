@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { useI18n } from "@/components/providers/app-providers";
 
 const navigation = [
-  { key: "dashboard", href: "/" },
+  { key: "dashboard", href: "/dashboard" },
   { key: "invoices", href: "/invoices" },
   { key: "expenses", href: "/expenses" },
   { key: "reports", href: "/reports" },

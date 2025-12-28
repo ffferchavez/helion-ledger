@@ -27,7 +27,7 @@ export default async function InvoicesPage() {
   let invoices: Awaited<ReturnType<typeof getInvoicesByOrganization>>;
   let clients: Awaited<ReturnType<typeof getClientsByOrganization>>;
 
-  if (env.USE_MOCK_DATA) {
+  if (env.USE_MOCK_DATA || !env.DATABASE_URL) {
     invoices = getMockInvoices() as any;
     clients = getMockClients() as any;
   } else {

@@ -30,6 +30,18 @@ export default function LoginPage() {
   const demoEmail = process.env.NEXT_PUBLIC_DEMO_EMAIL || "";
   const demoPassword = process.env.NEXT_PUBLIC_DEMO_PASSWORD || "";
 
+  const performSignIn = async (nextEmail: string, nextPassword: string) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await signInWithPassword(nextEmail, nextPassword);
+    } catch (err) {
+      setError(t("common.unexpectedError"));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const signInWithPassword = async (nextEmail: string, nextPassword: string) => {
     const { error } = await supabase.auth.signInWithPassword({
       email: nextEmail,
@@ -41,26 +53,17 @@ export default function LoginPage() {
       return false;
     }
 
-    router.push("/");
+    router.push("/dashboard");
     router.refresh();
     return true;
   };
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      await signInWithPassword(email, password);
-    } catch (err) {
-      setError(t("common.unexpectedError"));
-    } finally {
-      setIsLoading(false);
-    }
+    await performSignIn(email, password);
   };
 
-  const handleDemoFill = () => {
+  const handleDemoFill = async () => {
     if (!demoEmail || !demoPassword) {
       setError(t("login.demoNotConfigured"));
       return;
@@ -69,6 +72,7 @@ export default function LoginPage() {
     setError(null);
     setEmail(demoEmail);
     setPassword(demoPassword);
+    await performSignIn(demoEmail, demoPassword);
   };
 
   const isBusy = isLoading;
