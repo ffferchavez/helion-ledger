@@ -18,6 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { CURRENCY, LANGUAGE, COUNTRY_CONTEXT } from "@/lib/constants";
 import { calculateTax, calculateTotal, formatCurrency } from "@/lib/currency";
 import { Plus, Trash2 } from "lucide-react";
+import { useI18n } from "@/components/providers/app-providers";
 
 interface InvoiceFormProps {
   initialData?: InvoiceFormData;
@@ -28,6 +29,7 @@ interface InvoiceFormProps {
 }
 
 export function InvoiceForm({ initialData, clients, onSubmit, onCancel, isLoading }: InvoiceFormProps) {
+  const { t } = useI18n();
   const {
     register,
     handleSubmit,
@@ -64,7 +66,7 @@ export function InvoiceForm({ initialData, clients, onSubmit, onCancel, isLoadin
   const handleFormSubmit = async (data: InvoiceFormData) => {
     const result = await onSubmit(data);
     if (!result.success && result.error) {
-      alert(result.error);
+      alert(t(result.error));
     }
   };
 
@@ -72,13 +74,15 @@ export function InvoiceForm({ initialData, clients, onSubmit, onCancel, isLoadin
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="clientId">Client *</Label>
+          <Label htmlFor="clientId">
+            {t("invoices.form.client")} *
+          </Label>
           <Select
             value={watch("clientId") || ""}
             onValueChange={(value) => setValue("clientId", value)}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Select client" />
+              <SelectValue placeholder={t("invoices.form.selectClient")} />
             </SelectTrigger>
             <SelectContent>
               {clients.map((client) => (
@@ -88,13 +92,15 @@ export function InvoiceForm({ initialData, clients, onSubmit, onCancel, isLoadin
               ))}
             </SelectContent>
           </Select>
-          {errors.clientId && (
-            <p className="text-sm text-destructive">{errors.clientId.message}</p>
+          {errors.clientId?.message && (
+            <p className="text-sm text-destructive">{t(errors.clientId.message)}</p>
           )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="countryContext">Country Context *</Label>
+          <Label htmlFor="countryContext">
+            {t("invoices.form.countryContext")} *
+          </Label>
           <Select
             value={watch("countryContext") || COUNTRY_CONTEXT.DE}
             onValueChange={(value) => setValue("countryContext", value as any)}
@@ -103,9 +109,9 @@ export function InvoiceForm({ initialData, clients, onSubmit, onCancel, isLoadin
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={COUNTRY_CONTEXT.DE}>Germany (DE)</SelectItem>
-              <SelectItem value={COUNTRY_CONTEXT.MX}>Mexico (MX)</SelectItem>
-              <SelectItem value={COUNTRY_CONTEXT.OTHER}>Other</SelectItem>
+              <SelectItem value={COUNTRY_CONTEXT.DE}>{t("countries.DE")}</SelectItem>
+              <SelectItem value={COUNTRY_CONTEXT.MX}>{t("countries.MX")}</SelectItem>
+              <SelectItem value={COUNTRY_CONTEXT.OTHER}>{t("countries.OTHER")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -113,21 +119,29 @@ export function InvoiceForm({ initialData, clients, onSubmit, onCancel, isLoadin
 
       <div className="grid gap-4 md:grid-cols-3">
         <div className="space-y-2">
-          <Label htmlFor="issueDate">Issue Date *</Label>
+          <Label htmlFor="issueDate">
+            {t("invoices.form.issueDate")} *
+          </Label>
           <Input id="issueDate" type="date" {...register("issueDate")} />
-          {errors.issueDate && (
-            <p className="text-sm text-destructive">{errors.issueDate.message}</p>
+          {errors.issueDate?.message && (
+            <p className="text-sm text-destructive">{t(errors.issueDate.message)}</p>
           )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="dueDate">Due Date *</Label>
+          <Label htmlFor="dueDate">
+            {t("invoices.form.dueDate")} *
+          </Label>
           <Input id="dueDate" type="date" {...register("dueDate")} />
-          {errors.dueDate && <p className="text-sm text-destructive">{errors.dueDate.message}</p>}
+          {errors.dueDate?.message && (
+            <p className="text-sm text-destructive">{t(errors.dueDate.message)}</p>
+          )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="currency">Currency *</Label>
+          <Label htmlFor="currency">
+            {t("invoices.form.currency")} *
+          </Label>
           <Select value={currency || CURRENCY.EUR} onValueChange={(value) => setValue("currency", value as any)}>
             <SelectTrigger>
               <SelectValue />
@@ -142,7 +156,9 @@ export function InvoiceForm({ initialData, clients, onSubmit, onCancel, isLoadin
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="language">Language *</Label>
+        <Label htmlFor="language">
+          {t("invoices.form.language")} *
+        </Label>
         <Select
           value={watch("language") || LANGUAGE.EN}
           onValueChange={(value) => setValue("language", value as any)}
@@ -151,16 +167,16 @@ export function InvoiceForm({ initialData, clients, onSubmit, onCancel, isLoadin
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value={LANGUAGE.EN}>English</SelectItem>
-            <SelectItem value={LANGUAGE.DE}>Deutsch</SelectItem>
-            <SelectItem value={LANGUAGE.ES}>Español</SelectItem>
+            <SelectItem value={LANGUAGE.EN}>{t("languages.en")}</SelectItem>
+            <SelectItem value={LANGUAGE.DE}>{t("languages.de")}</SelectItem>
+            <SelectItem value={LANGUAGE.ES}>{t("languages.es")}</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <Label>Line Items *</Label>
+          <Label>{t("invoices.form.lineItems")} *</Label>
           <Button
             type="button"
             variant="outline"
@@ -168,7 +184,7 @@ export function InvoiceForm({ initialData, clients, onSubmit, onCancel, isLoadin
             onClick={() => append({ description: "", quantity: 1, unitPrice: 0, taxRate: 19 })}
           >
             <Plus className="mr-2 h-4 w-4" />
-            Add Item
+            {t("invoices.form.addItem")}
           </Button>
         </div>
 
@@ -176,12 +192,12 @@ export function InvoiceForm({ initialData, clients, onSubmit, onCancel, isLoadin
           {fields.map((field, index) => (
             <div
               key={field.id}
-              className="flex gap-2 items-start rounded-xl border border-white/10 bg-white/5 p-4"
+              className="flex gap-2 items-start rounded-xl border border-border bg-muted/40 p-4"
             >
               <div className="flex-1 grid grid-cols-1 gap-2 md:grid-cols-12">
                 <div className="md:col-span-5">
                   <Input
-                    placeholder="Description"
+                    placeholder={t("invoices.form.description")}
                     {...register(`items.${index}.description`)}
                   />
                 </div>
@@ -189,7 +205,7 @@ export function InvoiceForm({ initialData, clients, onSubmit, onCancel, isLoadin
                   <Input
                     type="number"
                     step="0.01"
-                    placeholder="Quantity"
+                    placeholder={t("invoices.form.quantity")}
                     {...register(`items.${index}.quantity`, { valueAsNumber: true })}
                   />
                 </div>
@@ -197,7 +213,7 @@ export function InvoiceForm({ initialData, clients, onSubmit, onCancel, isLoadin
                   <Input
                     type="number"
                     step="0.01"
-                    placeholder="Unit Price"
+                    placeholder={t("invoices.form.unitPrice")}
                     {...register(`items.${index}.unitPrice`, { valueAsNumber: true })}
                   />
                 </div>
@@ -205,7 +221,7 @@ export function InvoiceForm({ initialData, clients, onSubmit, onCancel, isLoadin
                   <Input
                     type="number"
                     step="0.01"
-                    placeholder="Tax %"
+                    placeholder={t("invoices.form.taxRate")}
                     {...register(`items.${index}.taxRate`, { valueAsNumber: true })}
                   />
                 </div>
@@ -224,26 +240,28 @@ export function InvoiceForm({ initialData, clients, onSubmit, onCancel, isLoadin
             </div>
           ))}
         </div>
-        {errors.items && <p className="text-sm text-destructive">{errors.items.message}</p>}
+        {errors.items?.message && (
+          <p className="text-sm text-destructive">{t(errors.items.message)}</p>
+        )}
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="notes">Notes</Label>
+        <Label htmlFor="notes">{t("invoices.form.notes")}</Label>
         <Textarea id="notes" {...register("notes")} rows={3} />
       </div>
 
-      <div className="border-t border-white/10 pt-4">
+      <div className="border-t border-border pt-4">
         <div className="flex justify-end space-x-4 text-right">
           <div>
-            <div className="text-sm text-muted-foreground">Subtotal:</div>
+            <div className="text-sm text-muted-foreground">{t("common.subtotal")}:</div>
             <div className="text-lg font-semibold">{formatCurrency(subtotal, currency as any)}</div>
           </div>
           <div>
-            <div className="text-sm text-muted-foreground">Tax:</div>
+            <div className="text-sm text-muted-foreground">{t("common.tax")}:</div>
             <div className="text-lg font-semibold">{formatCurrency(taxTotal, currency as any)}</div>
           </div>
           <div>
-            <div className="text-sm text-muted-foreground">Total:</div>
+            <div className="text-sm text-muted-foreground">{t("common.total")}:</div>
             <div className="text-xl font-bold">{formatCurrency(total, currency as any)}</div>
           </div>
         </div>
@@ -252,11 +270,11 @@ export function InvoiceForm({ initialData, clients, onSubmit, onCancel, isLoadin
       <div className="flex justify-end gap-2">
         {onCancel && (
           <Button type="button" variant="outline" onClick={onCancel} disabled={isLoading}>
-            Cancel
+            {t("common.cancel")}
           </Button>
         )}
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? "Saving..." : "Save Invoice"}
+          {isLoading ? t("common.saving") : t("invoices.form.save")}
         </Button>
       </div>
     </form>

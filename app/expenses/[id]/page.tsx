@@ -11,8 +11,11 @@ import { formatCurrency } from "@/lib/currency";
 import { formatDate } from "@/lib/date";
 import { env } from "@/lib/env";
 import { getMockExpenses } from "@/lib/mock-data-helpers";
+import { getServerTranslations } from "@/lib/i18n/server";
+import { getCountryLabelKey, getExpenseCategoryLabelKey, getPaymentMethodLabelKey } from "@/lib/i18n/formatters";
 
 export default async function ExpenseDetailPage({ params }: { params: { id: string } }) {
+  const { t } = await getServerTranslations();
   let expense: Awaited<ReturnType<typeof getExpenseById>> | null = null;
 
   if (env.USE_MOCK_DATA || !env.DATABASE_URL) {
@@ -68,12 +71,12 @@ export default async function ExpenseDetailPage({ params }: { params: { id: stri
         <main className="flex-1 overflow-y-auto p-6 sm:p-8 animate-in fade-in duration-500">
           <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="text-3xl font-semibold tracking-tight">Expense Details</h2>
-              <p className="text-sm text-muted-foreground">View and edit expense</p>
+              <h2 className="text-3xl font-semibold tracking-tight">{t("expenses.detail.title")}</h2>
+              <p className="text-sm text-muted-foreground">{t("expenses.detail.subtitle")}</p>
             </div>
             <form action={handleDelete}>
               <Button type="submit" variant="destructive">
-                Delete
+                {t("common.delete")}
               </Button>
             </form>
           </div>
@@ -82,8 +85,8 @@ export default async function ExpenseDetailPage({ params }: { params: { id: stri
             <div className="md:col-span-2">
               <Card>
                 <CardHeader>
-                  <CardTitle>Expense Details</CardTitle>
-                  <CardDescription>Edit expense information</CardDescription>
+                  <CardTitle>{t("expenses.detail.title")}</CardTitle>
+                  <CardDescription>{t("expenses.detail.subtitle")}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ExpenseForm initialData={expenseFormData} onSubmit={handleSubmit} />
@@ -94,23 +97,23 @@ export default async function ExpenseDetailPage({ params }: { params: { id: stri
             <div className="space-y-4">
               <Card>
                 <CardHeader>
-                  <CardTitle>Summary</CardTitle>
+                  <CardTitle>{t("expenses.detail.summaryTitle")}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Amount:</span>
+                    <span className="text-muted-foreground">{t("common.amount")}:</span>
                     <span className="font-semibold">
                       {formatCurrency(parseFloat(expenseData.amount), expenseData.currency as any)}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Tax:</span>
+                    <span className="text-muted-foreground">{t("common.tax")}:</span>
                     <span className="font-semibold">
                       {formatCurrency(parseFloat(expenseData.taxAmount), expenseData.currency as any)}
                     </span>
                   </div>
-                  <div className="flex justify-between border-t border-white/10 pt-2">
-                    <span className="font-bold">Total:</span>
+                  <div className="flex justify-between border-t border-border pt-2">
+                    <span className="font-bold">{t("common.total")}:</span>
                     <span className="text-xl font-bold">
                       {formatCurrency(parseFloat(expenseData.totalAmount), expenseData.currency as any)}
                     </span>
@@ -120,34 +123,38 @@ export default async function ExpenseDetailPage({ params }: { params: { id: stri
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Information</CardTitle>
+                  <CardTitle>{t("expenses.detail.infoTitle")}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm">
                   <div>
-                    <span className="text-muted-foreground">Date:</span>{" "}
+                    <span className="text-muted-foreground">{t("common.date")}:</span>{" "}
                     <span className="font-medium">{formatDate(expenseData.date)}</span>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">Category:</span>{" "}
-                    <span className="font-medium capitalize">{expenseData.category.replace("_", " ")}</span>
+                    <span className="text-muted-foreground">{t("expenses.table.category")}:</span>{" "}
+                    <span className="font-medium">
+                      {t(`expenseCategories.${getExpenseCategoryLabelKey(expenseData.category)}`)}
+                    </span>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">Payment Method:</span>{" "}
-                    <span className="font-medium capitalize">{expenseData.paymentMethod}</span>
+                    <span className="text-muted-foreground">{t("expenses.form.paymentMethod")}:</span>{" "}
+                    <span className="font-medium">
+                      {t(`paymentMethods.${getPaymentMethodLabelKey(expenseData.paymentMethod)}`)}
+                    </span>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">Country:</span>{" "}
-                    <span className="font-medium">{expenseData.countryContext}</span>
+                    <span className="text-muted-foreground">{t("common.country")}:</span>{" "}
+                    <span className="font-medium">{t(`countries.${getCountryLabelKey(expenseData.countryContext)}`)}</span>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">Deductible:</span>{" "}
-                    <span className="font-medium">{expenseData.deductible ? "Yes" : "No"}</span>
+                    <span className="text-muted-foreground">{t("expenses.detail.deductibleLabel")}:</span>{" "}
+                    <span className="font-medium">{expenseData.deductible ? t("common.yes") : t("common.no")}</span>
                   </div>
                   {expenseData.receiptUrl && (
                     <div className="pt-2">
                       <Button asChild variant="outline" className="w-full">
                         <a href={expenseData.receiptUrl} target="_blank" rel="noopener noreferrer">
-                          View Receipt
+                          {t("expenses.detail.viewReceipt")}
                         </a>
                       </Button>
                     </div>

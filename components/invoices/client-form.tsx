@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CURRENCY, LANGUAGE } from "@/lib/constants";
+import { useI18n } from "@/components/providers/app-providers";
 
 interface ClientFormProps {
   initialData?: ClientFormData;
@@ -23,6 +24,7 @@ interface ClientFormProps {
 }
 
 export function ClientForm({ initialData, onSubmit, onCancel, isLoading }: ClientFormProps) {
+  const { t } = useI18n();
   const {
     register,
     handleSubmit,
@@ -46,65 +48,69 @@ export function ClientForm({ initialData, onSubmit, onCancel, isLoading }: Clien
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="name">Name *</Label>
+        <Label htmlFor="name">{t("clientForm.name")} *</Label>
         <Input id="name" {...register("name")} />
-        {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
+        {errors.name?.message && (
+          <p className="text-sm text-destructive">{t(errors.name.message)}</p>
+        )}
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="contactPerson">Contact Person</Label>
+        <Label htmlFor="contactPerson">{t("clientForm.contactPerson")}</Label>
         <Input id="contactPerson" {...register("contactPerson")} />
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">{t("clientForm.email")}</Label>
           <Input id="email" type="email" {...register("email")} />
-          {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
+          {errors.email?.message && (
+            <p className="text-sm text-destructive">{t(errors.email.message)}</p>
+          )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="phone">Phone</Label>
+          <Label htmlFor="phone">{t("clientForm.phone")}</Label>
           <Input id="phone" {...register("phone")} />
         </div>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="addressLine1">Address Line 1</Label>
+        <Label htmlFor="addressLine1">{t("clientForm.addressLine1")}</Label>
         <Input id="addressLine1" {...register("addressLine1")} />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="addressLine2">Address Line 2</Label>
+        <Label htmlFor="addressLine2">{t("clientForm.addressLine2")}</Label>
         <Input id="addressLine2" {...register("addressLine2")} />
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
         <div className="space-y-2">
-          <Label htmlFor="city">City</Label>
+          <Label htmlFor="city">{t("clientForm.city")}</Label>
           <Input id="city" {...register("city")} />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="postalCode">Postal Code</Label>
+          <Label htmlFor="postalCode">{t("clientForm.postalCode")}</Label>
           <Input id="postalCode" {...register("postalCode")} />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="country">Country</Label>
+          <Label htmlFor="country">{t("clientForm.country")}</Label>
           <Input id="country" {...register("country")} />
         </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="defaultCurrency">Default Currency</Label>
+          <Label htmlFor="defaultCurrency">{t("clientForm.defaultCurrency")}</Label>
           <Select
             value={defaultCurrency || ""}
             onValueChange={(value) => setValue("defaultCurrency", value as any)}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Select currency" />
+              <SelectValue placeholder={t("clientForm.selectCurrency")} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value={CURRENCY.EUR}>EUR</SelectItem>
@@ -115,7 +121,7 @@ export function ClientForm({ initialData, onSubmit, onCancel, isLoading }: Clien
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="defaultLanguage">Default Language</Label>
+          <Label htmlFor="defaultLanguage">{t("clientForm.defaultLanguage")}</Label>
           <Select
             value={defaultLanguage || LANGUAGE.EN}
             onValueChange={(value) => setValue("defaultLanguage", value as any)}
@@ -124,27 +130,27 @@ export function ClientForm({ initialData, onSubmit, onCancel, isLoading }: Clien
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={LANGUAGE.EN}>English</SelectItem>
-              <SelectItem value={LANGUAGE.DE}>Deutsch</SelectItem>
-              <SelectItem value={LANGUAGE.ES}>Español</SelectItem>
+              <SelectItem value={LANGUAGE.EN}>{t("languages.en")}</SelectItem>
+              <SelectItem value={LANGUAGE.DE}>{t("languages.de")}</SelectItem>
+              <SelectItem value={LANGUAGE.ES}>{t("languages.es")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="taxId">Tax ID / VAT ID</Label>
+        <Label htmlFor="taxId">{t("clientForm.taxId")}</Label>
         <Input id="taxId" {...register("taxId")} />
       </div>
 
       <div className="flex justify-end gap-2">
         {onCancel && (
           <Button type="button" variant="outline" onClick={onCancel} disabled={isLoading}>
-            Cancel
+            {t("common.cancel")}
           </Button>
         )}
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? "Saving..." : "Save"}
+          {isLoading ? t("common.saving") : t("clientForm.save")}
         </Button>
       </div>
     </form>

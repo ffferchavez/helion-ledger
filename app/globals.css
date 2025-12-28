@@ -46,37 +46,41 @@
 
 :root {
   --radius: 0.9rem;
-  --background: #0b0d10;
-  --foreground: #f8fafc;
-  --card: #0f1218;
-  --card-foreground: #f8fafc;
-  --popover: #0f1218;
-  --popover-foreground: #f8fafc;
-  --primary: #dbe7ff;
-  --primary-foreground: #0b0d10;
-  --secondary: #111620;
-  --secondary-foreground: #e2e8f0;
-  --muted: #0f141c;
-  --muted-foreground: #8b95a7;
-  --accent: #121826;
-  --accent-foreground: #e2e8f0;
-  --destructive: #ff5c77;
-  --border: rgba(255, 255, 255, 0.08);
-  --input: rgba(255, 255, 255, 0.08);
-  --ring: #7fb0ff;
-  --chart-1: #7fb0ff;
-  --chart-2: #86efac;
-  --chart-3: #facc15;
-  --chart-4: #f472b6;
-  --chart-5: #94a3b8;
-  --sidebar: #0c0f14;
-  --sidebar-foreground: #e2e8f0;
-  --sidebar-primary: #9fb4ff;
-  --sidebar-primary-foreground: #0b0d10;
-  --sidebar-accent: #111827;
-  --sidebar-accent-foreground: #e2e8f0;
-  --sidebar-border: rgba(255, 255, 255, 0.08);
-  --sidebar-ring: #7fb0ff;
+  --background: #f4f6fb;
+  --foreground: #0b0d10;
+  --card: #ffffff;
+  --card-foreground: #0b0d10;
+  --popover: #ffffff;
+  --popover-foreground: #0b0d10;
+  --primary: #0b0d10;
+  --primary-foreground: #f8fafc;
+  --secondary: #e7ebf4;
+  --secondary-foreground: #0b0d10;
+  --muted: #eef2f7;
+  --muted-foreground: #64748b;
+  --accent: #e4eaf5;
+  --accent-foreground: #0b0d10;
+  --destructive: #e11d48;
+  --border: rgba(15, 23, 42, 0.12);
+  --input: rgba(15, 23, 42, 0.12);
+  --ring: #4f83ff;
+  --chart-1: #4f83ff;
+  --chart-2: #22c55e;
+  --chart-3: #f59e0b;
+  --chart-4: #db2777;
+  --chart-5: #64748b;
+  --sidebar: #f1f4f9;
+  --sidebar-foreground: #0b0d10;
+  --sidebar-primary: #1f2a44;
+  --sidebar-primary-foreground: #f8fafc;
+  --sidebar-accent: #e7ebf4;
+  --sidebar-accent-foreground: #0b0d10;
+  --sidebar-border: rgba(15, 23, 42, 0.1);
+  --sidebar-ring: #4f83ff;
+  --page-radial-1: radial-gradient(60% 50% at 10% 0%, rgba(94, 163, 255, 0.25), transparent 65%);
+  --page-radial-2: radial-gradient(50% 45% at 90% 10%, rgba(15, 23, 42, 0.08), transparent 70%);
+  --page-base: linear-gradient(180deg, rgba(244, 246, 251, 0.98), rgba(244, 246, 251, 0.98));
+  color-scheme: light;
 }
 
 .dark {
@@ -111,6 +115,10 @@
   --sidebar-accent-foreground: #e2e8f0;
   --sidebar-border: rgba(255, 255, 255, 0.08);
   --sidebar-ring: #7fb0ff;
+  --page-radial-1: radial-gradient(60% 50% at 15% 0%, rgba(94, 163, 255, 0.18), transparent 65%);
+  --page-radial-2: radial-gradient(40% 35% at 90% 10%, rgba(255, 255, 255, 0.08), transparent 70%);
+  --page-base: linear-gradient(180deg, rgba(11, 13, 16, 0.98), rgba(11, 13, 16, 0.98));
+  color-scheme: dark;
 }
 
 @layer base {
@@ -119,11 +127,8 @@
   }
   body {
     @apply bg-background text-foreground font-sans antialiased min-h-screen;
-    background-image: radial-gradient(60% 50% at 15% 0%, rgba(94, 163, 255, 0.18), transparent 65%),
-      radial-gradient(40% 35% at 90% 10%, rgba(255, 255, 255, 0.08), transparent 70%),
-      linear-gradient(180deg, rgba(11, 13, 16, 0.98), rgba(11, 13, 16, 0.98));
+    background-image: var(--page-radial-1), var(--page-radial-2), var(--page-base);
     background-attachment: fixed;
-    color-scheme: dark;
   }
   ::selection {
     background: rgba(127, 176, 255, 0.35);

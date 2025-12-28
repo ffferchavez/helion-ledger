@@ -2,9 +2,9 @@ import { z } from "zod";
 import { CURRENCY, LANGUAGE } from "../constants";
 
 export const clientSchema = z.object({
-  name: z.string().min(1, "Name is required"),
+  name: z.string().min(1, "validation.nameRequired"),
   contactPerson: z.string().optional(),
-  email: z.string().email("Invalid email address").optional().or(z.literal("")),
+  email: z.string().email("validation.invalidEmail").optional().or(z.literal("")),
   phone: z.string().optional(),
   addressLine1: z.string().optional(),
   addressLine2: z.string().optional(),
@@ -17,4 +17,3 @@ export const clientSchema = z.object({
 });
 
 export type ClientFormData = z.infer<typeof clientSchema>;
-

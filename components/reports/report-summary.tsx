@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { formatCurrency } from "@/lib/currency";
 import { COUNTRY_CONTEXT, PERIOD_TYPE } from "@/lib/constants";
+import { useI18n } from "@/components/providers/app-providers";
 
 interface ReportSummaryProps {
   summary: {
@@ -42,6 +43,7 @@ interface ReportSummaryProps {
 export function ReportSummary({ summary, year, periodType, countryContext }: ReportSummaryProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { t } = useI18n();
   const [selectedYear, setSelectedYear] = useState(year || new Date().getFullYear());
   const [selectedPeriod, setSelectedPeriod] = useState(periodType);
   const [selectedCountry, setSelectedCountry] = useState(countryContext || "all");
@@ -58,25 +60,25 @@ export function ReportSummary({ summary, year, periodType, countryContext }: Rep
 
   const handleExportCSV = () => {
     // TODO: Implement CSV export
-    alert("CSV export coming soon");
+    alert(t("reports.exportCsvSoon"));
   };
 
   const handleExportPDF = () => {
     // TODO: Implement PDF export
-    alert("PDF export coming soon");
+    alert(t("reports.exportPdfSoon"));
   };
 
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Filters</CardTitle>
-          <CardDescription>Select period and country</CardDescription>
+          <CardTitle>{t("reports.filtersTitle")}</CardTitle>
+          <CardDescription>{t("reports.filtersDesc")}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div className="space-y-2">
-              <Label htmlFor="year">Year</Label>
+              <Label htmlFor="year">{t("reports.year")}</Label>
               <Input
                 id="year"
                 type="number"
@@ -85,38 +87,38 @@ export function ReportSummary({ summary, year, periodType, countryContext }: Rep
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="period">Period Type</Label>
+              <Label htmlFor="period">{t("reports.periodType")}</Label>
               <Select value={selectedPeriod} onValueChange={(value: any) => setSelectedPeriod(value)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value={PERIOD_TYPE.MONTHLY}>Monthly</SelectItem>
-                  <SelectItem value={PERIOD_TYPE.QUARTERLY}>Quarterly</SelectItem>
-                  <SelectItem value={PERIOD_TYPE.YEARLY}>Yearly</SelectItem>
+                  <SelectItem value={PERIOD_TYPE.MONTHLY}>{t("reports.monthly")}</SelectItem>
+                  <SelectItem value={PERIOD_TYPE.QUARTERLY}>{t("reports.quarterly")}</SelectItem>
+                  <SelectItem value={PERIOD_TYPE.YEARLY}>{t("reports.yearly")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="country">Country</Label>
+              <Label htmlFor="country">{t("reports.country")}</Label>
               <Select
                 value={selectedCountry}
                 onValueChange={(value) => setSelectedCountry(value)}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="All countries" />
+                  <SelectValue placeholder={t("reports.allCountries")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All countries</SelectItem>
-                  <SelectItem value={COUNTRY_CONTEXT.DE}>Germany (DE)</SelectItem>
-                  <SelectItem value={COUNTRY_CONTEXT.MX}>Mexico (MX)</SelectItem>
-                  <SelectItem value={COUNTRY_CONTEXT.OTHER}>Other</SelectItem>
+                  <SelectItem value="all">{t("reports.allCountries")}</SelectItem>
+                  <SelectItem value={COUNTRY_CONTEXT.DE}>{t("countries.DE")}</SelectItem>
+                  <SelectItem value={COUNTRY_CONTEXT.MX}>{t("countries.MX")}</SelectItem>
+                  <SelectItem value={COUNTRY_CONTEXT.OTHER}>{t("countries.OTHER")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className="flex items-end">
               <Button onClick={handleFilterChange} className="w-full">
-                Apply Filters
+                {t("reports.applyFilters")}
               </Button>
             </div>
           </div>
@@ -126,38 +128,38 @@ export function ReportSummary({ summary, year, periodType, countryContext }: Rep
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 stagger-children">
         <Card>
           <CardHeader>
-            <CardTitle>Total Revenue</CardTitle>
-            <CardDescription>Income for period</CardDescription>
+            <CardTitle>{t("reports.totalRevenue")}</CardTitle>
+            <CardDescription>{t("reports.incomePeriod")}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
               {formatCurrency(summary.revenue.total, "EUR")}
             </div>
             <div className="text-sm text-muted-foreground mt-1">
-              {summary.revenue.count} invoices
+              {summary.revenue.count} {t("reports.invoicesLabel")}
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Total Expenses</CardTitle>
-            <CardDescription>Expenses for period</CardDescription>
+            <CardTitle>{t("reports.totalExpenses")}</CardTitle>
+            <CardDescription>{t("reports.expensesPeriod")}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
               {formatCurrency(summary.expenses.total, "EUR")}
             </div>
             <div className="text-sm text-muted-foreground mt-1">
-              {summary.expenses.count} expenses
+              {summary.expenses.count} {t("reports.expensesLabel")}
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Net Result</CardTitle>
-            <CardDescription>Revenue minus expenses</CardDescription>
+            <CardTitle>{t("reports.netResult")}</CardTitle>
+            <CardDescription>{t("reports.netDesc")}</CardDescription>
           </CardHeader>
           <CardContent>
             <div
@@ -172,8 +174,8 @@ export function ReportSummary({ summary, year, periodType, countryContext }: Rep
 
         <Card>
           <CardHeader>
-            <CardTitle>Tax Net</CardTitle>
-            <CardDescription>Tax collected minus paid</CardDescription>
+            <CardTitle>{t("reports.taxNet")}</CardTitle>
+            <CardDescription>{t("reports.taxNetDesc")}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
@@ -185,48 +187,48 @@ export function ReportSummary({ summary, year, periodType, countryContext }: Rep
 
       <Card>
         <CardHeader>
-          <CardTitle>Detailed Breakdown</CardTitle>
+          <CardTitle>{t("reports.detailedBreakdown")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <h3 className="font-semibold mb-2">Revenue</h3>
+                <h3 className="font-semibold mb-2">{t("reports.revenue")}</h3>
                 <div className="space-y-1 text-sm">
                   <div className="flex justify-between">
-                    <span>Subtotal:</span>
+                    <span>{t("reports.subtotal")}:</span>
                     <span>{formatCurrency(summary.revenue.total - summary.revenue.taxCollected, "EUR")}</span>
                   </div>
-                <div className="flex justify-between">
-                  <span>Tax Collected:</span>
-                  <span>{formatCurrency(summary.revenue.taxCollected, "EUR")}</span>
+                  <div className="flex justify-between">
+                    <span>{t("reports.taxCollected")}:</span>
+                    <span>{formatCurrency(summary.revenue.taxCollected, "EUR")}</span>
+                  </div>
+                  <div className="flex justify-between font-semibold border-t border-border pt-1">
+                    <span>{t("reports.total")}:</span>
+                    <span>{formatCurrency(summary.revenue.total, "EUR")}</span>
+                  </div>
                 </div>
-                <div className="flex justify-between font-semibold border-t border-white/10 pt-1">
-                  <span>Total:</span>
-                  <span>{formatCurrency(summary.revenue.total, "EUR")}</span>
-                </div>
-              </div>
               </div>
               <div>
-                <h3 className="font-semibold mb-2">Expenses</h3>
+                <h3 className="font-semibold mb-2">{t("reports.expenses")}</h3>
                 <div className="space-y-1 text-sm">
                   <div className="flex justify-between">
-                    <span>Subtotal:</span>
+                    <span>{t("reports.subtotal")}:</span>
                     <span>{formatCurrency(summary.expenses.total - summary.expenses.taxPaid, "EUR")}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Tax Paid:</span>
+                    <span>{t("reports.taxPaid")}:</span>
                     <span>{formatCurrency(summary.expenses.taxPaid, "EUR")}</span>
                   </div>
-                <div className="flex justify-between">
-                  <span>Deductible:</span>
-                  <span>{formatCurrency(summary.expenses.deductible, "EUR")}</span>
+                  <div className="flex justify-between">
+                    <span>{t("reports.deductible")}:</span>
+                    <span>{formatCurrency(summary.expenses.deductible, "EUR")}</span>
+                  </div>
+                  <div className="flex justify-between font-semibold border-t border-border pt-1">
+                    <span>{t("reports.total")}:</span>
+                    <span>{formatCurrency(summary.expenses.total, "EUR")}</span>
+                  </div>
                 </div>
-                <div className="flex justify-between font-semibold border-t border-white/10 pt-1">
-                  <span>Total:</span>
-                  <span>{formatCurrency(summary.expenses.total, "EUR")}</span>
-                </div>
-              </div>
               </div>
             </div>
           </div>
@@ -235,10 +237,10 @@ export function ReportSummary({ summary, year, periodType, countryContext }: Rep
 
       <div className="flex flex-wrap gap-2">
         <Button onClick={handleExportCSV} variant="outline">
-          Export CSV
+          {t("reports.exportCsv")}
         </Button>
         <Button onClick={handleExportPDF} variant="outline">
-          Generate PDF Summary
+          {t("reports.generatePdf")}
         </Button>
       </div>
     </div>

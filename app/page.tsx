@@ -11,8 +11,10 @@ import { formatCurrency } from "@/lib/currency";
 import { COUNTRY_CONTEXT } from "@/lib/constants";
 import { env } from "@/lib/env";
 import { getMockFinancialSummary, getMockInvoices } from "@/lib/mock-data-helpers";
+import { getServerTranslations } from "@/lib/i18n/server";
 
 export default async function DashboardPage() {
+  const { t } = await getServerTranslations();
   let currentMonthSummary: Awaited<ReturnType<typeof getFinancialSummary>>;
   let ytdSummary: Awaited<ReturnType<typeof getFinancialSummary>>;
   let deSummary: Awaited<ReturnType<typeof getFinancialSummary>>;
@@ -72,48 +74,48 @@ export default async function DashboardPage() {
         <Sidebar />
         <main className="flex-1 overflow-y-auto p-6 sm:p-8 animate-in fade-in duration-500">
           {env.USE_MOCK_DATA && (
-            <div className="mb-4 rounded-xl border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-sm text-amber-100">
-              🧪 Using mock data for UI preview
+            <div className="mb-4 rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-amber-900 dark:text-amber-100">
+              {t("mock.banner")}
             </div>
           )}
           <div className="mb-6">
-            <h2 className="text-3xl font-semibold tracking-tight">Dashboard</h2>
-            <p className="text-sm text-muted-foreground">Overview of your financial data</p>
+            <h2 className="text-3xl font-semibold tracking-tight">{t("dashboard.title")}</h2>
+            <p className="text-sm text-muted-foreground">{t("dashboard.subtitle")}</p>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6 stagger-children">
             <Card>
               <CardHeader>
-                <CardTitle>Revenue (This Month)</CardTitle>
-                <CardDescription>Total income for current month</CardDescription>
+                <CardTitle>{t("dashboard.revenueMonth")}</CardTitle>
+                <CardDescription>{t("dashboard.revenueDesc")}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
                   {formatCurrency(currentMonthSummary.revenue.total, "EUR")}
                 </div>
                 <div className="text-sm text-muted-foreground mt-1">
-                  YTD: {formatCurrency(ytdSummary.revenue.total, "EUR")}
+                  {t("dashboard.ytd")}: {formatCurrency(ytdSummary.revenue.total, "EUR")}
                 </div>
               </CardContent>
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>Expenses (This Month)</CardTitle>
-                <CardDescription>Total expenses for current month</CardDescription>
+                <CardTitle>{t("dashboard.expensesMonth")}</CardTitle>
+                <CardDescription>{t("dashboard.expensesDesc")}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
                   {formatCurrency(currentMonthSummary.expenses.total, "EUR")}
                 </div>
                 <div className="text-sm text-muted-foreground mt-1">
-                  YTD: {formatCurrency(ytdSummary.expenses.total, "EUR")}
+                  {t("dashboard.ytd")}: {formatCurrency(ytdSummary.expenses.total, "EUR")}
                 </div>
               </CardContent>
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>Net Result</CardTitle>
-                <CardDescription>Revenue minus expenses</CardDescription>
+                <CardTitle>{t("dashboard.netResult")}</CardTitle>
+                <CardDescription>{t("dashboard.netDesc")}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div
@@ -124,14 +126,14 @@ export default async function DashboardPage() {
                   {formatCurrency(currentMonthSummary.net.result, "EUR")}
                 </div>
                 <div className="text-sm text-muted-foreground mt-1">
-                  YTD: {formatCurrency(ytdSummary.net.result, "EUR")}
+                  {t("dashboard.ytd")}: {formatCurrency(ytdSummary.net.result, "EUR")}
                 </div>
               </CardContent>
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>Pending Invoices</CardTitle>
-                <CardDescription>Invoices awaiting payment</CardDescription>
+                <CardTitle>{t("dashboard.pendingInvoices")}</CardTitle>
+                <CardDescription>{t("dashboard.pendingDesc")}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{pendingInvoices.length}</div>
@@ -151,25 +153,25 @@ export default async function DashboardPage() {
           <div className="grid gap-4 md:grid-cols-2 mb-6 stagger-children">
             <Card>
               <CardHeader>
-                <CardTitle>Germany (DE)</CardTitle>
-                <CardDescription>DE operations summary</CardDescription>
+                <CardTitle>{t("dashboard.germanyTitle")}</CardTitle>
+                <CardDescription>{t("dashboard.germanyDesc")}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
                   <div className="flex justify-between">
-                    <span>Revenue:</span>
+                    <span>{t("dashboard.revenueLabel")}:</span>
                     <span className="font-semibold">
                       {formatCurrency(deSummary.revenue.total, "EUR")}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Expenses:</span>
+                    <span>{t("dashboard.expensesLabel")}:</span>
                     <span className="font-semibold">
                       {formatCurrency(deSummary.expenses.total, "EUR")}
                     </span>
                   </div>
                   <div className="flex justify-between border-t pt-2">
-                    <span>Net:</span>
+                    <span>{t("dashboard.netLabel")}:</span>
                     <span className="font-semibold">
                       {formatCurrency(deSummary.net.result, "EUR")}
                     </span>
@@ -179,25 +181,25 @@ export default async function DashboardPage() {
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>Mexico (MX)</CardTitle>
-                <CardDescription>MX operations summary</CardDescription>
+                <CardTitle>{t("dashboard.mexicoTitle")}</CardTitle>
+                <CardDescription>{t("dashboard.mexicoDesc")}</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
                   <div className="flex justify-between">
-                    <span>Revenue:</span>
+                    <span>{t("dashboard.revenueLabel")}:</span>
                     <span className="font-semibold">
                       {formatCurrency(mxSummary.revenue.total, "MXN")}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Expenses:</span>
+                    <span>{t("dashboard.expensesLabel")}:</span>
                     <span className="font-semibold">
                       {formatCurrency(mxSummary.expenses.total, "MXN")}
                     </span>
                   </div>
                   <div className="flex justify-between border-t pt-2">
-                    <span>Net:</span>
+                    <span>{t("dashboard.netLabel")}:</span>
                     <span className="font-semibold">
                       {formatCurrency(mxSummary.net.result, "MXN")}
                     </span>
@@ -209,10 +211,10 @@ export default async function DashboardPage() {
 
           <div className="flex flex-wrap gap-3">
             <Link href="/invoices/new">
-              <Button>New Invoice</Button>
+              <Button>{t("header.newInvoice")}</Button>
             </Link>
             <Link href="/expenses/new">
-              <Button variant="outline">New Expense</Button>
+              <Button variant="outline">{t("header.newExpense")}</Button>
             </Link>
           </div>
         </main>

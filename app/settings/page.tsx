@@ -8,8 +8,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { OrganizationSettingsForm } from "@/components/settings/organization-form";
 import { env } from "@/lib/env";
 import { mockOrganization } from "@/lib/mock-data";
+import { getServerTranslations } from "@/lib/i18n/server";
 
 export default async function SettingsPage() {
+  const { t } = await getServerTranslations();
   const organizationId = await requireOrganizationId();
   
   let organization;
@@ -30,7 +32,7 @@ export default async function SettingsPage() {
   }
 
   if (!organization) {
-    return <div>Organization not found</div>;
+    return <div>{t("settings.notFound")}</div>;
   }
 
   return (
@@ -40,14 +42,14 @@ export default async function SettingsPage() {
         <Sidebar />
         <main className="flex-1 overflow-y-auto p-6 sm:p-8 animate-in fade-in duration-500">
           <div className="mb-6">
-            <h2 className="text-3xl font-semibold tracking-tight">Settings</h2>
-            <p className="text-sm text-muted-foreground">Manage your organization settings</p>
+            <h2 className="text-3xl font-semibold tracking-tight">{t("settings.title")}</h2>
+            <p className="text-sm text-muted-foreground">{t("settings.subtitle")}</p>
           </div>
 
           <Card>
             <CardHeader>
-              <CardTitle>Organization Settings</CardTitle>
-              <CardDescription>Update your organization information</CardDescription>
+              <CardTitle>{t("settings.cardTitle")}</CardTitle>
+              <CardDescription>{t("settings.cardDesc")}</CardDescription>
             </CardHeader>
             <CardContent>
               <OrganizationSettingsForm organization={organization} />

@@ -8,8 +8,10 @@ import { redirect } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { env } from "@/lib/env";
 import { getMockClients } from "@/lib/mock-data-helpers";
+import { getServerTranslations } from "@/lib/i18n/server";
 
 export default async function NewInvoicePage() {
+  const { t } = await getServerTranslations();
   let clients: Awaited<ReturnType<typeof getClientsByOrganization>>;
   
   if (env.USE_MOCK_DATA || !env.DATABASE_URL) {
@@ -40,14 +42,14 @@ export default async function NewInvoicePage() {
         <Sidebar />
         <main className="flex-1 overflow-y-auto p-6 sm:p-8 animate-in fade-in duration-500">
           <div className="mb-6">
-            <h2 className="text-3xl font-semibold tracking-tight">New Invoice</h2>
-            <p className="text-sm text-muted-foreground">Create a new invoice</p>
+            <h2 className="text-3xl font-semibold tracking-tight">{t("invoices.newInvoice")}</h2>
+            <p className="text-sm text-muted-foreground">{t("invoices.newSubtitle")}</p>
           </div>
 
           <Card>
             <CardHeader>
-              <CardTitle>Invoice Details</CardTitle>
-              <CardDescription>Fill in the invoice information</CardDescription>
+              <CardTitle>{t("invoices.detail.detailsTitle")}</CardTitle>
+              <CardDescription>{t("invoices.detail.cardDesc")}</CardDescription>
             </CardHeader>
             <CardContent>
               <InvoiceForm clients={clients} onSubmit={handleSubmit} />

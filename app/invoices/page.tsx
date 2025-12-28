@@ -18,8 +18,12 @@ import { formatCurrency } from "@/lib/currency";
 import { formatDate } from "@/lib/date";
 import { env } from "@/lib/env";
 import { getMockInvoices, getMockClients } from "@/lib/mock-data-helpers";
+import { getServerTranslations } from "@/lib/i18n/server";
+import { getCountryLabelKey } from "@/lib/i18n/formatters";
+import { getInvoiceStatusLabelKey } from "@/lib/i18n/formatters";
 
 export default async function InvoicesPage() {
+  const { t } = await getServerTranslations();
   let invoices: Awaited<ReturnType<typeof getInvoicesByOrganization>>;
   let clients: Awaited<ReturnType<typeof getClientsByOrganization>>;
 
@@ -48,43 +52,43 @@ export default async function InvoicesPage() {
         <Sidebar />
         <main className="flex-1 overflow-y-auto p-6 sm:p-8 animate-in fade-in duration-500">
           {env.USE_MOCK_DATA && (
-            <div className="mb-4 rounded-xl border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-sm text-amber-100">
-              🧪 Using mock data for UI preview
+            <div className="mb-4 rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-amber-900 dark:text-amber-100">
+              {t("mock.banner")}
             </div>
           )}
           <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="text-3xl font-semibold tracking-tight">Invoices</h2>
-              <p className="text-sm text-muted-foreground">Manage your invoices</p>
+              <h2 className="text-3xl font-semibold tracking-tight">{t("invoices.title")}</h2>
+              <p className="text-sm text-muted-foreground">{t("invoices.subtitle")}</p>
             </div>
             <Link href="/invoices/new">
-              <Button>New Invoice</Button>
+              <Button>{t("invoices.newInvoice")}</Button>
             </Link>
           </div>
 
           <Card>
             <CardHeader>
-              <CardTitle>Invoices</CardTitle>
-              <CardDescription>All your invoices</CardDescription>
+              <CardTitle>{t("invoices.cardTitle")}</CardTitle>
+              <CardDescription>{t("invoices.cardDesc")}</CardDescription>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Invoice #</TableHead>
-                    <TableHead>Client</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Country</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead>{t("invoices.table.number")}</TableHead>
+                    <TableHead>{t("invoices.table.client")}</TableHead>
+                    <TableHead>{t("invoices.table.date")}</TableHead>
+                    <TableHead>{t("invoices.table.amount")}</TableHead>
+                    <TableHead>{t("invoices.table.status")}</TableHead>
+                    <TableHead>{t("invoices.table.country")}</TableHead>
+                    <TableHead>{t("invoices.table.actions")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {invoices.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={7} className="text-center text-muted-foreground">
-                        No invoices found. Create your first invoice.
+                        {t("invoices.empty")}
                       </TableCell>
                     </TableRow>
                   ) : (
@@ -99,13 +103,13 @@ export default async function InvoicesPage() {
                             {formatCurrency(parseFloat(invoice.totalAmount), invoice.currency as any)}
                           </TableCell>
                           <TableCell>
-                            <span className="capitalize">{invoice.status}</span>
+                            <span>{t(`invoiceStatus.${getInvoiceStatusLabelKey(invoice.status)}`)}</span>
                           </TableCell>
-                          <TableCell>{invoice.countryContext}</TableCell>
+                          <TableCell>{t(`countries.${getCountryLabelKey(invoice.countryContext)}`)}</TableCell>
                           <TableCell>
                             <Link href={`/invoices/${invoice.id}`}>
                               <Button variant="ghost" size="sm">
-                                View
+                                {t("common.view")}
                               </Button>
                             </Link>
                           </TableCell>

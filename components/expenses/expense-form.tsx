@@ -22,6 +22,7 @@ import {
   PAYMENT_METHOD,
 } from "@/lib/constants";
 import { calculateTax, calculateTotal, formatCurrency } from "@/lib/currency";
+import { useI18n } from "@/components/providers/app-providers";
 
 interface ExpenseFormProps {
   initialData?: ExpenseFormData;
@@ -36,6 +37,7 @@ export function ExpenseForm({
   onCancel,
   isLoading,
 }: ExpenseFormProps) {
+  const { t } = useI18n();
   const {
     register,
     handleSubmit,
@@ -60,7 +62,7 @@ export function ExpenseForm({
   const handleFormSubmit = async (data: ExpenseFormData) => {
     const result = await onSubmit(data);
     if (!result.success && result.error) {
-      alert(result.error);
+      alert(t(result.error));
     }
   };
 
@@ -68,39 +70,51 @@ export function ExpenseForm({
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="vendorName">Vendor Name *</Label>
+          <Label htmlFor="vendorName">
+            {t("expenses.form.vendorName")} *
+          </Label>
           <Input id="vendorName" {...register("vendorName")} />
-          {errors.vendorName && (
-            <p className="text-sm text-destructive">{errors.vendorName.message}</p>
+          {errors.vendorName?.message && (
+            <p className="text-sm text-destructive">{t(errors.vendorName.message)}</p>
           )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="date">Date *</Label>
+          <Label htmlFor="date">
+            {t("expenses.form.date")} *
+          </Label>
           <Input id="date" type="date" {...register("date")} />
-          {errors.date && <p className="text-sm text-destructive">{errors.date.message}</p>}
+          {errors.date?.message && (
+            <p className="text-sm text-destructive">{t(errors.date.message)}</p>
+          )}
         </div>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="description">Description</Label>
+        <Label htmlFor="description">{t("expenses.form.description")}</Label>
         <Textarea id="description" {...register("description")} rows={3} />
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
         <div className="space-y-2">
-          <Label htmlFor="amount">Amount *</Label>
+          <Label htmlFor="amount">
+            {t("expenses.form.amount")} *
+          </Label>
           <Input
             id="amount"
             type="number"
             step="0.01"
             {...register("amount", { valueAsNumber: true })}
           />
-          {errors.amount && <p className="text-sm text-destructive">{errors.amount.message}</p>}
+          {errors.amount?.message && (
+            <p className="text-sm text-destructive">{t(errors.amount.message)}</p>
+          )}
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="currency">Currency *</Label>
+          <Label htmlFor="currency">
+            {t("expenses.form.currency")} *
+          </Label>
           <Select
             value={currency || CURRENCY.EUR}
             onValueChange={(value) => setValue("currency", value as any)}
@@ -117,68 +131,80 @@ export function ExpenseForm({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="taxRate">Tax Rate (%) *</Label>
+          <Label htmlFor="taxRate">
+            {t("expenses.form.taxRate")} *
+          </Label>
           <Input
             id="taxRate"
             type="number"
             step="0.01"
             {...register("taxRate", { valueAsNumber: true })}
           />
-          {errors.taxRate && <p className="text-sm text-destructive">{errors.taxRate.message}</p>}
-        </div>
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="category">Category *</Label>
-          <Select
-            value={watch("category") || ""}
-            onValueChange={(value) => setValue("category", value as any)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select category" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={EXPENSE_CATEGORY.RENT}>Rent</SelectItem>
-              <SelectItem value={EXPENSE_CATEGORY.SOFTWARE}>Software</SelectItem>
-              <SelectItem value={EXPENSE_CATEGORY.TRAVEL}>Travel</SelectItem>
-              <SelectItem value={EXPENSE_CATEGORY.OFFICE}>Office</SelectItem>
-              <SelectItem value={EXPENSE_CATEGORY.PROFESSIONAL_SERVICES}>
-                Professional Services
-              </SelectItem>
-              <SelectItem value={EXPENSE_CATEGORY.UTILITIES}>Utilities</SelectItem>
-              <SelectItem value={EXPENSE_CATEGORY.MARKETING}>Marketing</SelectItem>
-              <SelectItem value={EXPENSE_CATEGORY.OTHER}>Other</SelectItem>
-            </SelectContent>
-          </Select>
-          {errors.category && <p className="text-sm text-destructive">{errors.category.message}</p>}
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="paymentMethod">Payment Method *</Label>
-          <Select
-            value={watch("paymentMethod") || ""}
-            onValueChange={(value) => setValue("paymentMethod", value as any)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select method" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value={PAYMENT_METHOD.CARD}>Card</SelectItem>
-              <SelectItem value={PAYMENT_METHOD.CASH}>Cash</SelectItem>
-              <SelectItem value={PAYMENT_METHOD.TRANSFER}>Transfer</SelectItem>
-              <SelectItem value={PAYMENT_METHOD.OTHER}>Other</SelectItem>
-            </SelectContent>
-          </Select>
-          {errors.paymentMethod && (
-            <p className="text-sm text-destructive">{errors.paymentMethod.message}</p>
+          {errors.taxRate?.message && (
+            <p className="text-sm text-destructive">{t(errors.taxRate.message)}</p>
           )}
         </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="countryContext">Country Context *</Label>
+          <Label htmlFor="category">
+            {t("expenses.form.category")} *
+          </Label>
+          <Select
+            value={watch("category") || ""}
+            onValueChange={(value) => setValue("category", value as any)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder={t("expenses.form.selectCategory")} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={EXPENSE_CATEGORY.RENT}>{t("expenseCategories.rent")}</SelectItem>
+              <SelectItem value={EXPENSE_CATEGORY.SOFTWARE}>{t("expenseCategories.software")}</SelectItem>
+              <SelectItem value={EXPENSE_CATEGORY.TRAVEL}>{t("expenseCategories.travel")}</SelectItem>
+              <SelectItem value={EXPENSE_CATEGORY.OFFICE}>{t("expenseCategories.office")}</SelectItem>
+              <SelectItem value={EXPENSE_CATEGORY.PROFESSIONAL_SERVICES}>
+                {t("expenseCategories.professionalServices")}
+              </SelectItem>
+              <SelectItem value={EXPENSE_CATEGORY.UTILITIES}>{t("expenseCategories.utilities")}</SelectItem>
+              <SelectItem value={EXPENSE_CATEGORY.MARKETING}>{t("expenseCategories.marketing")}</SelectItem>
+              <SelectItem value={EXPENSE_CATEGORY.OTHER}>{t("expenseCategories.other")}</SelectItem>
+            </SelectContent>
+          </Select>
+          {errors.category?.message && (
+            <p className="text-sm text-destructive">{t(errors.category.message)}</p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="paymentMethod">
+            {t("expenses.form.paymentMethod")} *
+          </Label>
+          <Select
+            value={watch("paymentMethod") || ""}
+            onValueChange={(value) => setValue("paymentMethod", value as any)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder={t("expenses.form.selectMethod")} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={PAYMENT_METHOD.CARD}>{t("paymentMethods.card")}</SelectItem>
+              <SelectItem value={PAYMENT_METHOD.CASH}>{t("paymentMethods.cash")}</SelectItem>
+              <SelectItem value={PAYMENT_METHOD.TRANSFER}>{t("paymentMethods.transfer")}</SelectItem>
+              <SelectItem value={PAYMENT_METHOD.OTHER}>{t("paymentMethods.other")}</SelectItem>
+            </SelectContent>
+          </Select>
+          {errors.paymentMethod?.message && (
+            <p className="text-sm text-destructive">{t(errors.paymentMethod.message)}</p>
+          )}
+        </div>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <div className="space-y-2">
+          <Label htmlFor="countryContext">
+            {t("expenses.form.countryContext")} *
+          </Label>
           <Select
             value={watch("countryContext") || COUNTRY_CONTEXT.DE}
             onValueChange={(value) => setValue("countryContext", value as any)}
@@ -187,9 +213,9 @@ export function ExpenseForm({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={COUNTRY_CONTEXT.DE}>Germany (DE)</SelectItem>
-              <SelectItem value={COUNTRY_CONTEXT.MX}>Mexico (MX)</SelectItem>
-              <SelectItem value={COUNTRY_CONTEXT.OTHER}>Other</SelectItem>
+              <SelectItem value={COUNTRY_CONTEXT.DE}>{t("countries.DE")}</SelectItem>
+              <SelectItem value={COUNTRY_CONTEXT.MX}>{t("countries.MX")}</SelectItem>
+              <SelectItem value={COUNTRY_CONTEXT.OTHER}>{t("countries.OTHER")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -201,27 +227,27 @@ export function ExpenseForm({
             onCheckedChange={(checked) => setValue("deductible", checked === true)}
           />
           <Label htmlFor="deductible" className="cursor-pointer">
-            Tax deductible
+            {t("expenses.form.deductible")}
           </Label>
         </div>
       </div>
 
-      <div className="border-t border-white/10 pt-4">
+      <div className="border-t border-border pt-4">
         <div className="flex justify-end space-x-4 text-right">
           <div>
-            <div className="text-sm text-muted-foreground">Amount:</div>
+            <div className="text-sm text-muted-foreground">{t("common.amount")}:</div>
             <div className="text-lg font-semibold">
               {amount ? formatCurrency(amount, currency as any) : formatCurrency(0, currency as any)}
             </div>
           </div>
           <div>
-            <div className="text-sm text-muted-foreground">Tax:</div>
+            <div className="text-sm text-muted-foreground">{t("common.tax")}:</div>
             <div className="text-lg font-semibold">
               {formatCurrency(taxAmount, currency as any)}
             </div>
           </div>
           <div>
-            <div className="text-sm text-muted-foreground">Total:</div>
+            <div className="text-sm text-muted-foreground">{t("common.total")}:</div>
             <div className="text-xl font-bold">
               {formatCurrency(totalAmount, currency as any)}
             </div>
@@ -232,11 +258,11 @@ export function ExpenseForm({
       <div className="flex justify-end gap-2">
         {onCancel && (
           <Button type="button" variant="outline" onClick={onCancel} disabled={isLoading}>
-            Cancel
+            {t("common.cancel")}
           </Button>
         )}
         <Button type="submit" disabled={isLoading}>
-          {isLoading ? "Saving..." : "Save Expense"}
+          {isLoading ? t("common.saving") : t("expenses.form.save")}
         </Button>
       </div>
     </form>

@@ -13,8 +13,11 @@ import { formatDate } from "@/lib/date";
 import { InvoiceStatusSelect } from "@/components/invoices/invoice-status-select";
 import { env } from "@/lib/env";
 import { getMockInvoices, getMockClients } from "@/lib/mock-data-helpers";
+import { getServerTranslations } from "@/lib/i18n/server";
+import { getCountryLabelKey, getInvoiceStatusLabelKey } from "@/lib/i18n/formatters";
 
 export default async function InvoiceDetailPage({ params }: { params: { id: string } }) {
+  const { t } = await getServerTranslations();
   let invoice: Awaited<ReturnType<typeof getInvoiceById>>;
   let clients: Awaited<ReturnType<typeof getClientsByOrganization>>;
 
@@ -75,9 +78,9 @@ export default async function InvoiceDetailPage({ params }: { params: { id: stri
           <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
             <div>
               <h2 className="text-3xl font-semibold tracking-tight">
-                Invoice {invoice.invoiceNumber}
+                {t("invoices.detail.title", { number: invoice.invoiceNumber })}
               </h2>
-              <p className="text-sm text-muted-foreground">View and edit invoice details</p>
+              <p className="text-sm text-muted-foreground">{t("invoices.detail.subtitle")}</p>
             </div>
             <div className="flex gap-2">
               <InvoiceStatusSelect
@@ -92,8 +95,8 @@ export default async function InvoiceDetailPage({ params }: { params: { id: stri
             <div className="md:col-span-2">
               <Card>
                 <CardHeader>
-                  <CardTitle>Invoice Details</CardTitle>
-                  <CardDescription>Edit invoice information</CardDescription>
+                  <CardTitle>{t("invoices.detail.detailsTitle")}</CardTitle>
+                  <CardDescription>{t("invoices.detail.detailsDesc")}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <InvoiceForm
@@ -108,23 +111,23 @@ export default async function InvoiceDetailPage({ params }: { params: { id: stri
             <div className="space-y-4">
               <Card>
                 <CardHeader>
-                  <CardTitle>Summary</CardTitle>
+                  <CardTitle>{t("invoices.detail.summaryTitle")}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Subtotal:</span>
+                    <span className="text-muted-foreground">{t("common.subtotal")}:</span>
                     <span className="font-semibold">
                       {formatCurrency(parseFloat(invoice.subtotalAmount), invoice.currency as any)}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">Tax:</span>
+                    <span className="text-muted-foreground">{t("common.tax")}:</span>
                     <span className="font-semibold">
                       {formatCurrency(parseFloat(invoice.taxAmount), invoice.currency as any)}
                     </span>
                   </div>
-                  <div className="flex justify-between border-t border-white/10 pt-2">
-                    <span className="font-bold">Total:</span>
+                  <div className="flex justify-between border-t border-border pt-2">
+                    <span className="font-bold">{t("common.total")}:</span>
                     <span className="text-xl font-bold">
                       {formatCurrency(parseFloat(invoice.totalAmount), invoice.currency as any)}
                     </span>
@@ -134,30 +137,32 @@ export default async function InvoiceDetailPage({ params }: { params: { id: stri
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Information</CardTitle>
+                  <CardTitle>{t("invoices.detail.infoTitle")}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2 text-sm">
                   <div>
-                    <span className="text-muted-foreground">Issue Date:</span>{" "}
+                    <span className="text-muted-foreground">{t("invoices.detail.issueDate")}:</span>{" "}
                     <span className="font-medium">{formatDate(invoice.issueDate)}</span>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">Due Date:</span>{" "}
+                    <span className="text-muted-foreground">{t("invoices.detail.dueDate")}:</span>{" "}
                     <span className="font-medium">{formatDate(invoice.dueDate)}</span>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">Status:</span>{" "}
-                    <span className="font-medium capitalize">{invoice.status}</span>
+                    <span className="text-muted-foreground">{t("invoices.detail.status")}:</span>{" "}
+                    <span className="font-medium">
+                      {t(`invoiceStatus.${getInvoiceStatusLabelKey(invoice.status)}`)}
+                    </span>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">Country:</span>{" "}
-                    <span className="font-medium">{invoice.countryContext}</span>
+                    <span className="text-muted-foreground">{t("invoices.detail.country")}:</span>{" "}
+                    <span className="font-medium">{t(`countries.${getCountryLabelKey(invoice.countryContext)}`)}</span>
                   </div>
                   {invoice.pdfUrl && (
                     <div className="pt-2">
                       <Button asChild variant="outline" className="w-full">
                         <a href={invoice.pdfUrl} target="_blank" rel="noopener noreferrer">
-                          Download PDF
+                          {t("invoices.detail.downloadPdf")}
                         </a>
                       </Button>
                     </div>

@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { INVOICE_STATUS } from "@/lib/constants";
+import { useI18n } from "@/components/providers/app-providers";
 
 interface InvoiceStatusSelectProps {
   invoiceId: string;
@@ -24,6 +25,7 @@ export function InvoiceStatusSelect({
 }: InvoiceStatusSelectProps) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const { t } = useI18n();
 
   const handleChange = (value: string) => {
     startTransition(async () => {
@@ -38,13 +40,12 @@ export function InvoiceStatusSelect({
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value={INVOICE_STATUS.DRAFT}>Draft</SelectItem>
-        <SelectItem value={INVOICE_STATUS.SENT}>Sent</SelectItem>
-        <SelectItem value={INVOICE_STATUS.PAID}>Paid</SelectItem>
-        <SelectItem value={INVOICE_STATUS.OVERDUE}>Overdue</SelectItem>
-        <SelectItem value={INVOICE_STATUS.CANCELLED}>Cancelled</SelectItem>
+        <SelectItem value={INVOICE_STATUS.DRAFT}>{t("invoiceStatus.draft")}</SelectItem>
+        <SelectItem value={INVOICE_STATUS.SENT}>{t("invoiceStatus.sent")}</SelectItem>
+        <SelectItem value={INVOICE_STATUS.PAID}>{t("invoiceStatus.paid")}</SelectItem>
+        <SelectItem value={INVOICE_STATUS.OVERDUE}>{t("invoiceStatus.overdue")}</SelectItem>
+        <SelectItem value={INVOICE_STATUS.CANCELLED}>{t("invoiceStatus.cancelled")}</SelectItem>
       </SelectContent>
     </Select>
   );
 }
-

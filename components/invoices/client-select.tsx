@@ -11,6 +11,7 @@ import {
 import { getClientsByOrganization } from "@/db/queries/clients";
 import { requireOrganizationId } from "@/lib/supabase/auth-helpers";
 import type { Client } from "@/db/schema/clients";
+import { useI18n } from "@/components/providers/app-providers";
 
 interface ClientSelectProps {
   value?: string;
@@ -21,6 +22,7 @@ interface ClientSelectProps {
 export function ClientSelect({ value, onValueChange, organizationId }: ClientSelectProps) {
   const [clients, setClients] = useState<Client[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { t } = useI18n();
 
   useEffect(() => {
     async function loadClients() {
@@ -39,7 +41,7 @@ export function ClientSelect({ value, onValueChange, organizationId }: ClientSel
   return (
     <Select value={value} onValueChange={onValueChange} disabled={isLoading}>
       <SelectTrigger>
-        <SelectValue placeholder={isLoading ? "Loading..." : "Select client"} />
+        <SelectValue placeholder={isLoading ? t("misc.loading") : t("misc.selectClient")} />
       </SelectTrigger>
       <SelectContent>
         {clients.map((client) => (
@@ -51,4 +53,3 @@ export function ClientSelect({ value, onValueChange, organizationId }: ClientSel
     </Select>
   );
 }
-
